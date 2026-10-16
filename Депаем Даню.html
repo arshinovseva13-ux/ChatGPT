@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Казик Даня - Депни Даню!</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a2f1f 0%, #051f12 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', system-ui, -apple-system, 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Главный контейнер казино */
+        .casino-card {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            border-radius: 72px;
+            padding: 20px 24px 40px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            transition: all 0.2s;
+        }
+
+        /* Шапка с надписью */
+        .casino-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .casino-header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(135deg, #FFD966, #FFB347, #FF6A3D);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+        }
+
+        .casino-header p {
+            color: #e7e7b6;
+            margin: 5px 0 0;
+            font-weight: bold;
+            background: #1e2a1faa;
+            display: inline-block;
+            padding: 4px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(2px);
+        }
+
+        /* Зона Дани */
+        .danya-zone {
+            background: radial-gradient(circle at 30% 20%, #2c1a10, #1e0f08);
+            border-radius: 60px;
+            padding: 30px 20px 25px;
+            margin-bottom: 25px;
+            border: 2px solid #f5b642;
+            box-shadow: inset 0 0 15px #ffb34733, 0 10px 20px rgba(0,0,0,0.3);
+            transition: 0.1s linear;
+        }
+
+        /* Аватар + эмоции */
+        .danya-avatar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .face {
+            font-size: 120px;
+            filter: drop-shadow(6px 8px 0 rgba(0,0,0,0.3));
+            transition: transform 0.1s ease;
+            cursor: pointer;
+        }
+
+        .danya-name {
+            background: #000000aa;
+            backdrop-filter: blur(8px);
+            padding: 6px 18px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.6rem;
+            margin-top: 8px;
+            color: #ffdd99;
+            border: 1px solid gold;
+            font-family: monospace;
+        }
+
+        /* Статус бар (настроение, баланс) */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #0b0b0eaa;
+            backdrop-filter: blur(8px);
+            border-radius: 80px;
+            padding: 8px 16px;
+            margin-top: 20px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: #2a2418;
+            padding: 5px 15px;
+            border-radius: 40px;
+            color: #ffd966;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            flex: 1;
+            justify-content: center;
+            border-bottom: 2px solid #f7b32b;
+        }
+
+        .stat span:first-child {
+            color: #bcbc9a;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #ffd966;
+        }
+
+        /* Кнопка главного депнирования */
+        .dep-button {
+            background: radial-gradient(circle at 30% 10%, #f0b429, #c97e1a);
+            border: none;
+            width: 100%;
+            padding: 18px 12px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-family: inherit;
+            color: #2c1a0c;
+            text-shadow: 0 1px 0 #ffdd88;
+            border-radius: 80px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 0 #7a3e0e;
+            transition: 0.07s linear;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .dep-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 0 #7a3e0e;
+        }
+
+        /* Казино-батлы (доп опции) */
+        .casino-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: #2d2b20;
+            border: 1px solid #cb9e5e;
+            padding: 10px 16px;
+            border-radius: 60px;
+            font-weight: bold;
+            color: #ffecb3;
+            cursor: pointer;
+            transition: 0.1s;
+            flex: 1;
+            text-align: center;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .action-btn:active {
+            background: #544d35;
+            transform: scale(0.96);
+        }
+
+        /* Лог событий */
+        .event-log {
+            background: #0d0c0ae0;
+            border-radius: 48px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            border-left: 5px solid #f3b33d;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: #e7dbbd;
+        }
+
+        .event-log p {
+            margin: 6px 0;
+            padding: 4px 8px;
+            background: #1f1b12;
+            border-radius: 30px;
+            font-family: monospace;
+        }
+
+        .event-log p.new {
+            background: #5c431e;
+            color: #ffe0a3;
+            animation: fadeGlow 0.3s ease;
+        }
+
+        @keyframes fadeGlow {
+            0% { background: #f5bc42; color: black; }
+            100% { background: #5c431e; color: #ffe0a3; }
+        }
+
+        /* Счетчик комбо */
+        .combo-box {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #ffbb66;
+            background: #00000066;
+            border-radius: 40px;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 4px 18px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #9c834e;
+            margin-top: 18px;
+        }
+
+        @media (max-width: 500px) {
+            .casino-card {
+                padding: 16px 16px 30px;
+            }
+            .face {
+                font-size: 90px;
+            }
+            .dep-button {
+                font-size: 1.6rem;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="casino-card">
+    <div class="casino-header">
+        <h1>🎲 КАЗИК ДАНЯ 🎰</h1>
+        <p>💥 депни Даню на полную катушку 💥</p>
+    </div>
+
+    <div class="danya-zone">
+        <div class="danya-avatar">
+            <div class="face" id="danyaFace">😎</div>
+            <div class="danya-name">🍕 ДАНЯ БРО 🎲</div>
+        </div>
+        <div class="stats">
+            <div class="stat"><span>💪 КРУТОСТЬ:</span> <span class="stat-value" id="coolnessStat">100</span></div>
+            <div class="stat"><span>💰 БАЛАНС КАЗИКА:</span> <span class="stat-value" id="balanceStat">1000</span></div>
+        </div>
+        <div class="combo-box" id="comboDisplay">⚡ комбо: 0x</div>
+    </div>
+
+    <button class="dep-button" id="depButton">💥 ДЕПНУТЬ ДАНЮ 💥</button>
+
+    <div class="casino-actions">
+        <button class="action-btn" id="healBtn">🍺 ЗАЖРАТЬ (восстановить)</button>
+        <button class="action-btn" id="doubleBtn">🎲 ВА-БАНК (х2 риск)</button>
+        <button class="action-btn" id="resetBtn">🔄 ОБНУЛИТЬ КАЗИК</button>
+    </div>
+
+    <div class="event-log" id="eventLog">
+        <p>🎰 Депни Даню! Чем сильнее бьёшь, тем больше профита...</p>
+        <p>🤪 Но если крутость упадёт до 0 — Даня в ауте!</p>
+    </div>
+    <footer>⚡ Чем выше комбо, тем мощнее урон и награда! Рискни в ва-банк ⚡</footer>
+</div>
+
+<script>
+    // --- Игровая механика: депнуть Даню в казике ---
+    // Даня - наш подопытный. Параметры:
+    let danyaCoolness = 100;       // Крутость (здоровье) от 0 до 200 (перегруз не страшен, но если 0 - игра проиграна)
+    let casinoBalance = 1000;      // Баланс казика, который мы выигрываем / тратим
+    let combo = 0;                 // Комбо-серия успешных депов (сбрасывается при лечении или обнулении)
+    let gameOverFlag = false;      // Если крутость <= 0, Даня уходит в нокаут
+
+    // Элементы UI
+    const coolnessSpan = document.getElementById('coolnessStat');
+    const balanceSpan = document.getElementById('balanceStat');
+    const danyaFaceDiv = document.getElementById('danyaFace');
+    const comboDisplay = document.getElementById('comboDisplay');
+    const depButton = document.getElementById('depButton');
+    const healBtn = document.getElementById('healBtn');
+    const doubleBtn = document.getElementById('doubleBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const eventLogDiv = document.getElementById('eventLog');
+
+    // Вспомогательные функции: добавить сообщение в лог с анимацией
+    function addLogMessage(text, isError = false) {
+        const p = document.createElement('p');
+        p.textContent = text;
+        if (!isError) p.classList.add('new');
+        else p.style.background = "#631f1f";
+        eventLogDiv.prepend(p);   // свежие сообщения сверху
+        if (eventLogDiv.children.length > 12) {
+            eventLogDiv.removeChild(eventLogDiv.lastChild);
+        }
+        // автоскролл вверх чтобы видеть новое
+        eventLogDiv.scrollTop = 0;
+    }
+
+    // Обновить интерфейс (крутость, баланс, лицо, кнопки)
+    function updateUI() {
+        // ограничим крутость для отображения (но не меньше 0)
+        let displayCool = Math.max(0, danyaCoolness);
+        coolnessSpan.innerText = Math.floor(displayCool);
+        balanceSpan.innerText = Math.floor(casinoBalance);
+        comboDisplay.innerText = `⚡ комбо: ${combo}x`;
+
+        // Эмоции Дани в зависимости от крутости и game over
+        if (gameOverFlag || danyaCoolness <= 0) {
+            danyaFaceDiv.innerText = "💀😵💀";
+            depButton.disabled = true;
+            depButton.style.opacity = "0.5";
+            depButton.style.cursor = "not-allowed";
+        } else {
+            depButton.disabled = false;
+            depButton.style.opacity = "1";
+            if (danyaCoolness >= 80) danyaFaceDiv.innerText = "😎🕶️";
+            else if (danyaCoolness >= 50) danyaFaceDiv.innerText = "😐🎲";
+            else if (danyaCoolness >= 20) danyaFaceDiv.innerText = "😫💢";
+            else danyaFaceDiv.innerText = "🆘😭🆘";
+        }
+        // Если баланс уходит в минус? мы сделаем защиту от отрицательного, но по механике ниже не даём уйти в минус кроме особых действий
+        if (casinoBalance < 0) casinoBalance = 0;
+        if (danyaCoolness < 0) danyaCoolness = 0;
+
+        if (danyaCoolness <= 0 && !gameOverFlag) {
+            gameOverFlag = true;
+            addLogMessage("❌❌❌ ДАНЯ В НОКАУТЕ! КАЗИК ЗАКРЫТ! Нажмите 'ОБНУЛИТЬ КАЗИК' чтобы вернуть Даню ❌❌❌", true);
+            updateUI();
+        } else if (danyaCoolness > 0 && gameOverFlag) {
+            // если вдруг воскрес - снять флаг (при heal или reset)
+            gameOverFlag = false;
+            updateUI();
+        }
+    }
+
+    // Проверка на game over перед действием
+    function checkGameOver() {
+        if (gameOverFlag || danyaCoolness <= 0) {
+            addLogMessage("❌ Даня без сознания! Сначала обнулите казик или восстановите его!", true);
+            return true;
+        }
+        return false;
+    }
+
+    // Основная функция ДЕПНУТЬ (урон + награда)
+    function depnutDanya(riskMultiplier = 1) {
+        if (checkGameOver()) return false;
+
+        // базовый урон от удара: от 12 до 30 + зависит от комбо (каждый комбо даёт +6 урона и +8% к награде)
+        let baseDamage = 12 + Math.floor(Math.random() * 19); // 12-30
+        let comboBonusDamage = combo * 4;          // каждый комбо даёт +4 урона
+        let totalDamage = Math.floor(baseDamage + comboBonusDamage);
+        // Дополнительно если риск-мультипликатор >1 (ва-банк) увеличиваем урон в 2.5 раза, но рискованно
+        if (riskMultiplier > 1) {
+            totalDamage = Math.floor(totalDamage * 2.2);
+        }
+
+        // ограничим минимальный урон 5, максимальный не более 100 чтоб не слишком быстро
+        totalDamage = Math.min(totalDamage, 85);
+        totalDamage = Math.max(totalDamage, 5);
+
+        // новая крутость Дани
+        let newCoolness = danyaCoolness - totalDamage;
+        let overkill = false;
+        if (newCoolness <= 0) {
+            overkill = true;
+            newCoolness = 0;
+        }
+
+        // Рассчет выигрыша в казике: база (40-90) + бонус комбо * 12 + риск умножает награду
+        let baseReward = 40 + Math.floor(Math.random() * 70);  // 40-110
+        let comboRewardBonus = combo * 12;
+        let totalReward = baseReward + comboRewardBonus;
+        if (riskMultiplier > 1) {
+            totalReward = Math.floor(totalReward * 2.2);
+        }
+        // Если Даня упал в нокаут, то мы получаем джекпот-бонус +300!
+        if (overkill) {
+            totalReward += 300;
+            addLogMessage(`💢🔥🔥 НОКАУТ! ДАНЯ РУХНУЛ! ДЖЕКПОТ +300🔥🔥`, false);
+        }
+
+        // Проверка баланса: при ва-банке есть шанс, что казик не может выплатить? но мы просто не даём уйти в минус, но лучше сделать что если баланс + reward уходит в минус нелогично. Баланс не может быть отрицательным.
+        let newBalance = casinoBalance + totalReward;
+        if (newBalance < 0) newBalance = 0;
+
+        // Записываем изменения
+        let damageDealt = totalDamage;
+        danyaCoolness = newCoolness;
+        casinoBalance = newBalance;
+
+        // Логирование с эмоциями
+        let riskStr = riskMultiplier > 1 ? "🔥 ВА-БАНК РЕЖИМ 🔥" : "";
+        addLogMessage(`${riskStr} 💥 ДЕПНУЛ ДАНЮ на ${damageDealt} урона! Крутость Дани: ${Math.max(0, danyaCoolness)} | Выиграл ${totalReward} монет! Комбо: ${combo} ➕`, false);
+
+        // Если Даня не умер, увеличиваем комбо на 1, иначе комбо сбрасывается в 0 (нокаут)
+        if (!overkill) {
+            combo++;
+        } else {
+            combo = 0;
+            addLogMessage(`💀 Комбо сброшено! Даня в отключке.`, true);
+        }
+
+        updateUI();
+
+        // если наступил game over — обновить флаг
+        if (danyaCoolness <= 0) {
+            gameOverFlag = true;
+            updateUI();
+            addLogMessage(`💀 ИГРА ОКОНЧЕНА! Депни обнули казик, чтобы начать заново 💀`, true);
+        }
+        return true;
+    }
+
+    // Восстановить Даню (зажраться) - отнимает деньги из казика
+    function healDanya() {
+        if (checkGameOver()) {
+            // но если игра овер, можно всё равно восстанавливать? сделаем через обнуление, но отдельно: если геймовер, лечить нельзя, только ресет
+            addLogMessage(`Сначала нажми "ОБНУЛИТЬ КАЗИК" чтобы воскресить Даню!`, true);
+            return;
+        }
+        // стоимость лечения: 120 монет, но если баланса не хватает — нельзя
+        let healCost = 120;
+        if (casinoBalance < healCost) {
+            addLogMessage(`🚫 Не хватает монет для зажра! Нужно ${healCost}, у тебя ${Math.floor(casinoBalance)}`, true);
+            return;
+        }
+        // лечение: восстанавливает крутость на 35-65, но не более 150 (чтобы не бесконечно)
+        let healAmount = 35 + Math.floor(Math.random() * 35);
+        let newCool = danyaCoolness + healAmount;
+        if (newCool > 150) newCool = 150;
+        danyaCoolness = newCool;
+        casinoBalance -= healCost;
+        // сброс комбо при лечении (Даня восстановился, комбо теряется)
+        if (combo > 0) {
+            addLogMessage(`🍔 Зажрались! Комбо сброшено (${combo} -> 0) 🍔`, false);
+            combo = 0;
+        } else {
+            addLogMessage(`🍺 Даня подкрепился! +${healAmount} крутости! Стоимость ${healCost} монет.`, false);
+        }
+        updateUI();
+        addLogMessage(`💊 Восстановление +${healAmount} HP. Текущая крутость: ${Math.floor(danyaCoolness)}`, false);
+        if (danyaCoolness > 0 && gameOverFlag) gameOverFlag = false;
+        updateUI();
+    }
+
+    // Ва-банк: рискованный двойной удар с большими ставками
+    function riskyDoubleDep() {
+        if (checkGameOver()) return;
+        // дополнительная проверка: для ва-банка нужно минимум 50 монет на балансе? Сделаем как драйв: просто риск, но если баланс < 0 не страшно
+        if (casinoBalance < 30) {
+            addLogMessage(`⚠️ Для ва-банка нужно хотя бы 30 монет на счету! Сначала депни Даню легче.`, true);
+            return;
+        }
+        // шанс 30% на провал: отнимает деньги и наносит урон самому игроку? в нашем случае просто удар по Дане с риском потерять часть баланса
+        let failChance = 0.3;
+        let isFail = Math.random() < failChance;
+        if (isFail) {
+            let penalty = Math.floor(casinoBalance * 0.4) + 30;
+            penalty = Math.min(penalty, casinoBalance);
+            casinoBalance -= penalty;
+            let dmgToDanya = 15 + Math.floor(Math.random() * 25);
+            danyaCoolness = Math.max(0, danyaCoolness - dmgToDanya);
+            addLogMessage(`💣💣 ПРОВАЛ ВА-БАНКА! Потеряно ${penalty} монет! Даня получает дополнительно ${dmgToDanya} урона! Комбо сброшено!`, true);
+            combo = 0;
+            updateUI();
+            if (danyaCoolness <= 0) {
+                gameOverFlag = true;
+                addLogMessage(`❌ Даня в ауте из-за провала ва-банка!`, true);
+                updateUI();
+            }
+            return;
+        } else {
+            // успех! Удвоенный эффект депа
+            depnutDanya(2.2);
+        }
+    }
+
+    // Полный сброс игры: Даня воскресает, баланс 1000, крутость 100, комбо 0
+    function fullReset() {
+        danyaCoolness = 100;
+        casinoBalance = 1000;
+        combo = 0;
+        gameOverFlag = false;
+        updateUI();
+        addLogMessage(`🔄 КАЗИК ОБНУЛЁН! Даня снова в деле! Крутость 100, баланс 1000, комбо сброшено. ДЕПНИ ЕГО! 🔥`, false);
+        // очистка старого лога необязательна, но добавим приятный момент
+        danyaFaceDiv.innerText = "😎🕶️";
+        depButton.disabled = false;
+        depButton.style.opacity = "1";
+    }
+
+    // Бонусная логика: при клике на лицо Дани - дополнительная анимация + маленький бонус
+    function clickFaceBonus() {
+        if (gameOverFlag) {
+            addLogMessage(`Даня без сознания, не реагирует на щелчки...`, true);
+            return;
+        }
+        let bonus = 5 + Math.floor(Math.random() * 15);
+        casinoBalance += bonus;
+        addLogMessage(`✨ По лицу Дани щёлкнули! +${bonus} монет карма ✨`, false);
+        updateUI();
+        // легкая анимация
+        const faceEl = document.getElementById('danyaFace');
+        faceEl.style.transform = 'scale(1.1)';
+        setTimeout(() => { faceEl.style.transform = 'scale(1)'; }, 120);
+    }
+
+    // привязка событий
+    depButton.addEventListener('click', () => depnutDanya(1));
+    healBtn.addEventListener('click', healDanya);
+    doubleBtn.addEventListener('click', riskyDoubleDep);
+    resetBtn.addEventListener('click', fullReset);
+    document.getElementById('danyaFace').addEventListener('click', clickFaceBonus);
+
+    // начальное обновление
+    updateUI();
+    // дополнительно: если игра стартует с норм параметрами
+    addLogMessage("🎲 КАЗИК ОТКРЫТ! Жми ДЕПНУТЬ ДАНЮ, зарабатывай монеты, поднимай комбо! Но следи за крутостью Дани...", false);
+</script>
+</body>
+</html>
